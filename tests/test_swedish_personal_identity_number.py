@@ -173,7 +173,7 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
     def test_pretty_print(self):
         """Test that pretty print function runs without errors and contains key data."""
         pin = SwedishPersonalIdentityNumber("198012241231")
-        pretty_output = pin.pretty
+        pretty_output = pin.pretty_print()
 
         self.assertIn("1980", pretty_output)
         self.assertIn("12", pretty_output)
