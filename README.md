@@ -3,18 +3,23 @@
 <div align="center">
 
 [![PyPI version](https://img.shields.io/badge/pypi-v1.0.0-blue.svg)](https://pypi.org/project/swepin/)
-[![Python versions](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://pypi.org/project/swepin/)
+[![Python versions](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://pypi.org/project/swepin/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/yourusername/swepin)
 [![Documentation](https://img.shields.io/badge/docs-latest-orange.svg)](https://swepin.readthedocs.io)
 
 **A comprehensive library for parsing, validating, and handling Swedish Personal Identity Numbers (personnummer)**
 
 </div>
 
-## Overview
+## Features
 
-SwePin provides robust tools for working with Swedish Personal Identity Numbers, offering validation, parsing, and comprehensive information extraction. The library handles all formats of personal numbers, including standard formats, coordination numbers (samordningsnummer), and accounts for people over 100 years old.
+- ✅ Validate Swedish Personal Identity Numbers
+- 📊 Parse and extract all components (birth date, gender, validation digit, etc.)
+- 🌍 Multi-language support (English and Swedish)
+- 🧮 Age calculation with customizable reference date
+- 🔄 Format conversion (with/without separators, 10/12 digits)
+- ⚙️ Support for coordination numbers and centenarians
+- 🎲 Generate valid random PIN numbers for testing
 
 ## Installation
 
@@ -40,11 +45,11 @@ print(f"Age: {pin.age}")                        # Current age based on today's d
 print(f"Gender: {'Male' if pin.male else 'Female'}")
 
 # Display detailed information
-print(pin.pretty)                               # Prints a formatted table with all details
+print(pin.pretty_print())                       # Prints a formatted table with all details
 
 # Get structured data
-pin_data = pin.dict                             # Dictionary representation
-pin_json = pin.json                             # JSON representation
+pin.dict                                        # Dictionary representation
+pin.json                                        # JSON representation
 ```
 
 ## Understanding Swedish Personal Identity Numbers
@@ -105,13 +110,49 @@ print(pin.short_str_repr)               # "801224-1234" (10 digits with separato
 print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits, no separator)
 ```
 
+### Generate Random Valid PINs for Testing
+
+```python
+from swepin.generators import generate_valid_pins
+from datetime import date
+
+# Generate 5 random valid PIN objects
+pins = generate_valid_pins(5)
+for pin in pins:
+    print(f"{pin} (Birth Date: {pin.birth_date}, Gender: {'Male' if pin.male else 'Female'})")
+
+# Generate PINs with specific parameters
+male_pins = generate_valid_pins(3, male_ratio=1.0)
+old_pins = generate_valid_pins(3, start_year=1900, end_year=1923, include_centenarians=True)
+coord_pins = generate_valid_pins(3, include_coordination_numbers=True)
+
+# Generate PIN dictionaries or JSON
+pin_dicts = generate_valid_pins(5, to_dict=True)
+pin_jsons = generate_valid_pins(5, to_json=True)
+```
+
+### Language Support
+
+```python
+from swepin.swedish_personal_identity_number import SwedishPersonalIdentityNumber, Language
+
+pin = SwedishPersonalIdentityNumber("198012241234")
+
+# Get output in different languages
+print(pin.pretty_print(language=Language.ENG))  # Default - English
+print(pin.pretty_print(language=Language.SWE))  # Swedish
+
+# Get dictionary with Swedish keys
+sv_dict = pin.to_dict(language=Language.SWE)
+```
+
 ### Detailed Information
 
 Get comprehensive information about a personal number with a beautiful formatted display:
 
 ```python
 pin = SwePin("198012241234")
-print(pin.pretty)
+print(pin.pretty_print())
 ```
 
 Output:
@@ -195,50 +236,6 @@ pin = SwePin("121212+1212")  # Person born in 1912
 print(pin.short_str_repr)    # "121212+1212"
 print(pin.full_year)         # "1912"
 ```
-
-## API Reference
-
-### Main Class
-
-`SwedishPersonalIdentityNumber` (alias: `SwePin`)
-
-### Properties
-
-| Property | Description |
-|----------|-------------|
-| `pin` | Original personal identity number string |
-| `century` | Century part of birth year (e.g., "19") |
-| `year` | Year part without century (e.g., "80") |
-| `full_year` | Complete 4-digit year (e.g., "1980") |
-| `month` | Month part (e.g., "12") |
-| `day` | Day part (e.g., "24"), can be > 60 for coordination numbers |
-| `separator` | Separator character ("-" or "+") |
-| `birth_number` | 3-digit birth number, excluding validation digit |
-| `birth_place` | Birth place code (first 2 digits of birth_number) |
-| `gender_digit` | Gender digit (3rd digit of birth_number) |
-| `validation_digit` | Validation digit calculated using Luhn algorithm |
-| `age` | Calculated age based on birth date |
-| `male` | Boolean indicating if the person is male |
-| `female` | Boolean indicating if the person is female |
-| `long_str_repr` | Full 12-digit representation without separator |
-| `short_str_repr` | 10-digit representation with separator |
-| `long_str_repr_w_separator` | Full 12-digit representation with separator |
-| `short_str_repr_w_separator` | 10-digit representation without separator |
-| `pretty` | Formatted tabular representation of all properties |
-| `dict` | Dictionary representation of all properties |
-| `json` | JSON string representation of all properties |
-
-### Methods
-
-| Method | Description |
-|--------|-------------|
-| `get_date()` | Returns a `datetime.date` object of the birth date |
-| `get_age([today])` | Returns the current age, or age as of specified date |
-| `_is_coordination_number()` | Returns `True` if this is a coordination number |
-| `_is_male()` | Returns `True` if this is a male personal number |
-| `pretty_print()` | Returns a nicely formatted table of all properties |
-| `to_dict()` | Returns a dictionary representation |
-
 
 
 ## Contributing
