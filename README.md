@@ -20,6 +20,7 @@
 - 🔄 Format conversion (with/without separators, 10/12 digits)
 - ⚙️ Support for coordination numbers and centenarians
 - 🎲 Generate valid random PIN numbers for testing
+- 🔒 **Strict mode** for enforcing exact format requirements
 
 ## Installation
 
@@ -35,6 +36,9 @@ from swepin import SwedishIdentityPersonalNumber
 
 # Or using the shorter alias
 from swepin import SwePin
+
+# For strict format validation (YYYYMMDD-NNNN only)
+from swepin import SwePinStrict
 
 # Parse a Swedish Personal Identity Number
 pin = SwePin("198012241234")
@@ -87,7 +91,7 @@ Swedish Personal Identity Numbers follow this format: `YYYYMMDD-XXXX` or `YYMMDD
 SwePin supports all standard formats of Swedish Personal Identity Numbers:
 
 ```python
-# All these are valid and will parse correctly
+# All these are valid and will parse correctly with SwePin
 SwePin("198012241234")    # Full format (12 digits)
 SwePin("8012241234")      # Short format (10 digits)
 SwePin("19801224-1234")   # With separator
@@ -95,6 +99,40 @@ SwePin("801224-1234")     # Short with separator
 SwePin("19801284-1234")   # Coordination number (day 24 + 60 = 84)
 SwePin("121212+1212")     # Person over 100 years old (+ separator)
 ```
+
+### Strict Format Validation
+
+For applications that require exact format compliance, use `SwePinStrict` which only accepts the `YYYYMMDD-NNNN` format:
+
+```python
+from swepin import SwePinStrict
+
+# Only this format is accepted
+pin = SwePinStrict("19801224-1234")  # ✅ Valid
+pin = SwePinStrict("19801284-1234")  # ✅ Valid (coordination number)
+
+# These will raise exceptions
+try:
+    SwePinStrict("801224-1234")      # ❌ Missing century
+except Exception as e:
+    print(e)  # Format error
+
+try:
+    SwePinStrict("198012241234")     # ❌ No separator
+except Exception as e:
+    print(e)  # Format error
+
+try:
+    SwePinStrict("19801224+1234")    # ❌ Plus separator not allowed
+except Exception as e:
+    print(e)  # Format error
+```
+
+**When to use `SwePinStrict`:**
+- When you need to enforce a specific input format from users
+- In APIs where you want consistent data formatting
+- When integrating with systems that require the full YYYYMMDD-NNNN format
+- For data validation where format consistency is critical
 
 ### Format Conversion
 
@@ -237,6 +275,28 @@ print(pin.short_str_repr)    # "121212+1212"
 print(pin.full_year)         # "1912"
 ```
 
+## API Reference
+
+### Classes
+
+- **`SwePin`** / **`SwedishPersonalIdentityNumber`**: Main class that accepts all valid Swedish PIN formats
+- **`SwePinStrict`**: Strict validation class that only accepts `YYYYMMDD-NNNN` format
+- **`Language`**: Enum for multi-language support (`Language.ENG`, `Language.SWE`)
+
+### Key Properties
+
+- `age`: Current age
+- `male` / `female`: Gender booleans
+- `birth_date`: Birth date as `datetime.date` object
+- `is_coordination_number`: Boolean for coordination number detection
+- `long_str_repr`: 12-digit format without separator
+- `short_str_repr`: 10-digit format with separator
+
+### Key Methods
+
+- `pretty_print(language=Language.ENG)`: Formatted table display
+- `to_dict(language=Language.ENG)`: Dictionary representation
+- `get_date()`: Birth date extraction
 
 ## Contributing
 
