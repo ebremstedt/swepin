@@ -100,39 +100,22 @@ SwePin("19801284-1234")   # Coordination number (day 24 + 60 = 84)
 SwePin("121212+1212")     # Person over 100 years old (+ separator)
 ```
 
-### Strict Format Validation
+## Strict Format Validation
 
-For applications that require exact format compliance, use `SwePinStrict` which only accepts the `YYYYMMDD-NNNN` format:
+For applications that require exact format compliance, use `SwePinStrict` which enforces specific PIN formats through the `PinFormat` enum:
 
 ```python
-from swepin import SwePinStrict
+from swepin import SwePinStrict, PinFormat
 
-# Only this format is accepted
-pin = SwePinStrict("19801224-1234")  # ✅ Valid
-pin = SwePinStrict("19801284-1234")  # ✅ Valid (coordination number)
+# Default format (LONG_WITH_SEPARATOR)
+pin = SwePinStrict("19801224-1234")  # ✅ Uses default format
+pin = SwePinStrict("19801284-1234")  # ✅ Valid coordination number
 
-# These will raise exceptions
-try:
-    SwePinStrict("801224-1234")      # ❌ Missing century
-except Exception as e:
-    print(e)  # Format error
-
-try:
-    SwePinStrict("198012241234")     # ❌ No separator
-except Exception as e:
-    print(e)  # Format error
-
-try:
-    SwePinStrict("19801224+1234")    # ❌ Plus separator not allowed
-except Exception as e:
-    print(e)  # Format error
-```
-
-**When to use `SwePinStrict`:**
-- When you need to enforce a specific input format from users
-- In APIs where you want consistent data formatting
-- When integrating with systems that require the full YYYYMMDD-NNNN format
-- For data validation where format consistency is critical
+# Specify format explicitly
+pin1 = SwePinStrict("19801224-1234", PinFormat.LONG_WITH_SEPARATOR)    # 13 chars
+pin2 = SwePinStrict("198012241234", PinFormat.LONG_WITHOUT_SEPARATOR)  # 12 chars
+pin3 = SwePinStrict("801224-1234", PinFormat.SHORT_WITH_SEPARATOR)     # 11 chars
+pin4 = SwePinStrict("8012241234", PinFormat.SHORT_WITHOUT_SEPARATOR)   # 10 chars
 
 ### Format Conversion
 
@@ -220,7 +203,7 @@ Output:
 
 ### Validation
 
-The library validates personal numbers using the Luhn algorithm to ensure the check digit is correct:
+The library validates personal numbers using the Luhn algorithm to ensure the check/validation digit is correct:
 
 ```python
 try:
@@ -257,29 +240,6 @@ pin = SwePin("121212+1212")  # Person born in 1912
 print(pin.short_str_repr)    # "121212+1212"
 print(pin.full_year)         # "1912"
 ```
-
-## API Reference
-
-### Classes
-
-- **`SwePin`** / **`SwedishPersonalIdentityNumber`**: Main class that accepts all valid Swedish PIN formats
-- **`SwePinStrict`**: Strict validation class that only accepts `YYYYMMDD-NNNN` format
-- **`Language`**: Enum for multi-language support (`Language.ENG`, `Language.SWE`)
-
-### Key Properties
-
-- `age`: Current age
-- `male` / `female`: Gender booleans
-- `birth_date`: Birth date as `datetime.date` object
-- `is_coordination_number`: Boolean for coordination number detection
-- `long_str_repr_no_separator`: 12-digit format without separator
-- `short_str_repr_w_separator`: 10-digit format with separator
-
-### Key Methods
-
-- `pretty_print(language=Language.ENG)`: Formatted table display
-- `to_dict(language=Language.ENG)`: Dictionary representation
-- `get_date()`: Birth date extraction
 
 ## Contributing
 
