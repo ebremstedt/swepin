@@ -75,7 +75,7 @@ Swedish Personal Identity Numbers follow this format: `YYYYMMDD-XXXX` or `YYMMDD
   │   │   │   │     │
   │   │   │   │     └── Separator (- if < 100 years old, + if >= 100)
   │   │   │   │
-  │   │   │   └── Day (01-31, or 61-91 for coordination numbers)
+  │   │   │   └── Day (01-31, or 61-91 for coordination numbers a.k.a samordningsnummer)
   │   │   │
   │   │   └── Month (01-12)
   │   │
@@ -150,24 +150,7 @@ print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits, no separator)
 
 ### Generate Random Valid PINs for Testing
 
-```python
-from swepin.generators import generate_valid_pins
-from datetime import date
-
-# Generate 5 random valid PIN objects
-pins = generate_valid_pins(5)
-for pin in pins:
-    print(f"{pin} (Birth Date: {pin.birth_date}, Gender: {'Male' if pin.male else 'Female'})")
-
-# Generate PINs with specific parameters
-male_pins = generate_valid_pins(3, male_ratio=1.0)
-old_pins = generate_valid_pins(3, start_year=1900, end_year=1923, include_centenarians=True)
-coord_pins = generate_valid_pins(3, include_coordination_numbers=True)
-
-# Generate PIN dictionaries or JSON
-pin_dicts = generate_valid_pins(5, to_dict=True)
-pin_jsons = generate_valid_pins(5, to_json=True)
-```
+Read [this!](README_GENERATE.md)
 
 ### Language Support
 
@@ -289,8 +272,8 @@ print(pin.full_year)         # "1912"
 - `male` / `female`: Gender booleans
 - `birth_date`: Birth date as `datetime.date` object
 - `is_coordination_number`: Boolean for coordination number detection
-- `long_str_repr`: 12-digit format without separator
-- `short_str_repr`: 10-digit format with separator
+- `long_str_repr_no_separator`: 12-digit format without separator
+- `short_str_repr_w_separator`: 10-digit format with separator
 
 ### Key Methods
 
