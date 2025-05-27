@@ -1,8 +1,8 @@
 import random
 import datetime
 from datetime import date
-from swepin.swedish_personal_identity_number import (
-    SwedishPersonalIdentityNumber,
+from swepin.loose import (
+    SwePinLoose,
     calculate_luhn_validation_digit,
 )
 
@@ -18,7 +18,7 @@ def generate_valid_pins(
     today: date | None = None,
     to_dict: bool = False,
     to_json: bool = False,
-) -> list[SwedishPersonalIdentityNumber | dict | str]:
+) -> list[SwePinLoose | dict | str]:
     """
     Generate a list of valid Swedish Personal Identity Numbers as objects.
 
@@ -38,7 +38,7 @@ def generate_valid_pins(
         List of valid SwedishPersonalIdentityNumber objects
     """
 
-    pins: list[SwedishPersonalIdentityNumber] = []
+    pins: list[SwePinLoose] = []
     today_date = today if today else date.today()
 
     while len(pins) < count:
@@ -94,7 +94,7 @@ def generate_valid_pins(
                 f"{short_year}{month_str}{day_str}{birth_number}{validation_digit}"
             )
 
-        pin_obj = SwedishPersonalIdentityNumber(pin_str, today=today_date)
+        pin_obj = SwePinLoose(pin_str, today=today_date)
         pins.append(pin_obj)
 
     if to_dict:

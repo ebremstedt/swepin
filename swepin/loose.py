@@ -12,7 +12,7 @@ class Language(Enum):
     SWE = auto()  # Swedish (Svenska)
 
 
-class SwedishPersonalIdentityNumber:
+class SwePinLoose:
     """
     A class for parsing, validating and handling Swedish Personal Identity Numbers (personnummer).
 
@@ -258,8 +258,8 @@ class SwedishPersonalIdentityNumber:
         self.male = None
         self.female = None
         self.full_year = None
-        self.long_str_repr = None
-        self.short_str_repr = None
+        self.long_str_repr_no_separator = None
+        self.short_str_repr_no_separator = None
         self.long_str_repr_w_separator = None
         self.short_str_repr_w_separator = None
         self.dict = None
@@ -288,13 +288,13 @@ class SwedishPersonalIdentityNumber:
         self.female = not self._is_male()
 
         year_month_day = f"{self.year}{self.month}{self.day}"
-        self.long_str_repr = (
+        self.long_str_repr_no_separator = (
             f"{self.century}{year_month_day}{self.birth_number}{self.validation_digit}"
         )
-        self.short_str_repr = f"{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
+        self.short_str_repr_no_separator = f"{year_month_day}{self.birth_number}{self.validation_digit}"
         self.long_str_repr_w_separator = f"{self.century}{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
         self.short_str_repr_w_separator = (
-            f"{year_month_day}{self.birth_number}{self.validation_digit}"
+            f"{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
         )
         self.dict = self.to_dict()
         self.json = json.dumps(self.dict)
@@ -371,7 +371,7 @@ class SwedishPersonalIdentityNumber:
         self.validation_digit = match.group(10)
 
     def __str__(self):
-        return self.short_str_repr
+        return self.short_str_repr_w_separator
 
     def pretty_print(self, language: Language = Language.ENG) -> str:
         """
@@ -590,7 +590,7 @@ class SwedishPersonalIdentityNumber:
             "┃"
             + f" {'  ' + t['long_wo_sep']:^{prop_width-2}} "
             + "┃"
-            + f" {self.long_str_repr:<{val_width-2}} "
+            + f" {self.long_str_repr_no_separator:<{val_width-2}} "
             + "┃"
         )
         lines.append(
@@ -604,7 +604,7 @@ class SwedishPersonalIdentityNumber:
             "┃"
             + f" {'  ' + t['short_w_sep']:^{prop_width-2}} "
             + "┃"
-            + f" {self.short_str_repr:<{val_width-2}} "
+            + f" {self.short_str_repr_no_separator:<{val_width-2}} "
             + "┃"
         )
         lines.append(
@@ -646,8 +646,8 @@ class SwedishPersonalIdentityNumber:
                     "är_samordningsnummer": self.is_coordination_number,
                 },
                 "format": {
-                    "12 siffror": self.long_str_repr,
-                    "10 siffror": self.short_str_repr,
+                    "12 siffror": self.long_str_repr_no_separator,
+                    "10 siffror": self.short_str_repr_no_separator,
                     "12 siffror med skiljetecken": self.long_str_repr_w_separator,
                     "10 siffror med skiljetecken": self.short_str_repr_w_separator,
                 },
@@ -676,8 +676,8 @@ class SwedishPersonalIdentityNumber:
                     "is_coordination_number": self.is_coordination_number,
                 },
                 "formats": {
-                    "12 digits": self.long_str_repr,
-                    "10 digits": self.short_str_repr,
+                    "12 digits": self.long_str_repr_no_separator,
+                    "10 digits": self.short_str_repr_no_separator,
                     "12 digits w/ separator": self.long_str_repr_w_separator,
                     "10 digits w/ separator": self.short_str_repr_w_separator,
                 },

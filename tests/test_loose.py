@@ -1,6 +1,6 @@
 import unittest
 from datetime import date
-from swepin.swedish_personal_identity_number import SwedishPersonalIdentityNumber
+from swepin.loose import SwePinLoose
 
 
 class TestSwedishPersonalIdentityNumber(unittest.TestCase):
@@ -8,31 +8,31 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
 
     def test_valid_formats(self):
         """Test various valid input formats."""
-        pin1 = SwedishPersonalIdentityNumber("198012241231")
+        pin1 = SwePinLoose("198012241231")
         self.assertEqual(pin1.full_year, "1980")
         self.assertEqual(pin1.month, "12")
         self.assertEqual(pin1.day, "24")
         self.assertEqual(pin1.birth_number, "123")
         self.assertEqual(pin1.validation_digit, "1")
 
-        pin2 = SwedishPersonalIdentityNumber("8012241231")
+        pin2 = SwePinLoose("8012241231")
         self.assertEqual(pin2.full_year, "1980")
         self.assertEqual(pin2.month, "12")
         self.assertEqual(pin2.day, "24")
         self.assertEqual(pin2.birth_number, "123")
         self.assertEqual(pin2.validation_digit, "1")
 
-        pin3 = SwedishPersonalIdentityNumber("19801224-1231")
+        pin3 = SwePinLoose("19801224-1231")
         self.assertEqual(pin3.full_year, "1980")
         self.assertEqual(pin3.separator, "-")
 
-        pin4 = SwedishPersonalIdentityNumber("801224-1231")
+        pin4 = SwePinLoose("801224-1231")
         self.assertEqual(pin4.full_year, "1980")
         self.assertEqual(pin4.separator, "-")
 
     def test_coordination_numbers(self):
         """Test coordination numbers (day + 60)."""
-        pin = SwedishPersonalIdentityNumber("199812765452")
+        pin = SwePinLoose("199812765452")
         self.assertEqual(pin.day, "76")
         self.assertTrue(pin._is_coordination_number())
         self.assertEqual(pin.birth_date.day, 16)
@@ -42,24 +42,24 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
         """Test handling of people 100 years or older."""
         test_date = date(2024, 3, 1)
 
-        pin1 = SwedishPersonalIdentityNumber("230101+1231", today=test_date)
+        pin1 = SwePinLoose("230101+1231", today=test_date)
         self.assertEqual(pin1.full_year, "1923")
         self.assertEqual(pin1.separator, "+")
         self.assertEqual(pin1.age, 101)
 
-        pin2 = SwedishPersonalIdentityNumber("19230101-1231", today=test_date)
+        pin2 = SwePinLoose("19230101-1231", today=test_date)
         self.assertEqual(pin2.full_year, "1923")
         self.assertEqual(pin2.separator, "+")
         self.assertEqual(pin2.age, 101)
 
     def test_gender(self):
         """Test gender detection."""
-        pin_male = SwedishPersonalIdentityNumber("198012241231")
+        pin_male = SwePinLoose("198012241231")
         self.assertEqual(pin_male.gender_digit, "3")
         self.assertTrue(pin_male.male)
         self.assertFalse(pin_male.female)
 
-        pin_female = SwedishPersonalIdentityNumber("197911278286")
+        pin_female = SwePinLoose("197911278286")
         self.assertEqual(pin_female.gender_digit, "8")
         self.assertFalse(pin_female.male)
         self.assertTrue(pin_female.female)
@@ -68,70 +68,70 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
         """Test age calculation for different scenarios."""
         test_date = date(2025, 3, 1)
 
-        pin1 = SwedishPersonalIdentityNumber("198012241231", today=test_date)
+        pin1 = SwePinLoose("198012241231", today=test_date)
         self.assertEqual(pin1.age, 44)
 
-        pin2 = SwedishPersonalIdentityNumber("20250127-8283", today=test_date)
+        pin2 = SwePinLoose("20250127-8283", today=test_date)
         self.assertEqual(pin2.age, 0)
 
-        pin3 = SwedishPersonalIdentityNumber("20240302-1237", today=test_date)
+        pin3 = SwePinLoose("20240302-1237", today=test_date)
         self.assertEqual(pin3.age, 0)
 
-        pin4 = SwedishPersonalIdentityNumber("20240228-1238", today=test_date)
+        pin4 = SwePinLoose("20240228-1238", today=test_date)
         self.assertEqual(pin4.age, 1)
 
-        pin5 = SwedishPersonalIdentityNumber("198012241231", today=test_date)
+        pin5 = SwePinLoose("198012241231", today=test_date)
         self.assertEqual(pin5.age, 44)
 
     def test_validation_digit(self):
         """Test the Luhn algorithm validation."""
-        valid_pin = SwedishPersonalIdentityNumber("198012241231")
+        valid_pin = SwePinLoose("198012241231")
         self.assertEqual(valid_pin.validation_digit, "1")
 
         with self.assertRaises(Exception) as context:
-            SwedishPersonalIdentityNumber("198012241235")
+            SwePinLoose("198012241235")
         self.assertIn("Validation digit did not match", str(context.exception))
 
     def test_invalid_inputs(self):
         """Test various invalid inputs."""
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber(12345678901)
+            SwePinLoose(12345678901)
 
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber("abcdefghijkl")
+            SwePinLoose("abcdefghijkl")
 
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber("12345")
+            SwePinLoose("12345")
 
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber("1234567890123")
+            SwePinLoose("1234567890123")
 
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber("198013241234")
+            SwePinLoose("198013241234")
 
         with self.assertRaises(Exception):
-            SwedishPersonalIdentityNumber("198012321234")
+            SwePinLoose("198012321234")
 
     def test_string_representations(self):
         """Test the different string representations."""
-        pin = SwedishPersonalIdentityNumber("198012241231")
+        pin = SwePinLoose("198012241231")
 
-        self.assertEqual(pin.long_str_repr, "198012241231")
-        self.assertEqual(pin.short_str_repr, "801224-1231")
+        self.assertEqual(pin.long_str_repr_no_separator, "198012241231")
+        self.assertEqual(pin.short_str_repr_no_separator, "8012241231")
         self.assertEqual(pin.long_str_repr_w_separator, "19801224-1231")
-        self.assertEqual(pin.short_str_repr_w_separator, "8012241231")
+        self.assertEqual(pin.short_str_repr_w_separator, "801224-1231")
         self.assertEqual(str(pin), "801224-1231")
 
     def test_birth_date(self):
         """Test birth date extraction."""
-        pin = SwedishPersonalIdentityNumber("198012241231")
+        pin = SwePinLoose("198012241231")
         birth_date = pin.get_birth_date()
 
         self.assertEqual(birth_date.year, 1980)
         self.assertEqual(birth_date.month, 12)
         self.assertEqual(birth_date.day, 24)
 
-        pin_coord = SwedishPersonalIdentityNumber("199812165455")
+        pin_coord = SwePinLoose("199812165455")
         birth_date_coord = pin_coord.get_birth_date()
 
         self.assertEqual(birth_date_coord.year, 1998)
@@ -140,7 +140,7 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
 
     def test_dictionary_representation(self):
         """Test the dictionary representation."""
-        pin = SwedishPersonalIdentityNumber("198012241231")
+        pin = SwePinLoose("198012241231")
         pin_dict = pin.to_dict()
 
         self.assertEqual(pin_dict["personal_identity_number"], "198012241231")
@@ -156,23 +156,23 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
         """Test various edge cases."""
         test_date = date(2024, 3, 1)
 
-        today_pin = SwedishPersonalIdentityNumber("791127-8286", today=test_date)
+        today_pin = SwePinLoose("791127-8286", today=test_date)
         self.assertEqual(today_pin.age, 44)
 
-        leap_year_pin = SwedishPersonalIdentityNumber("200229-1231", today=test_date)
+        leap_year_pin = SwePinLoose("200229-1231", today=test_date)
         self.assertEqual(leap_year_pin.full_year, "2020")
         birth_date = leap_year_pin.birth_date
         self.assertEqual(birth_date.month, 2)
         self.assertEqual(birth_date.day, 29)
 
-        leap_coord_pin = SwedishPersonalIdentityNumber("791127-8286", today=test_date)
+        leap_coord_pin = SwePinLoose("791127-8286", today=test_date)
         birth_date = leap_coord_pin.get_birth_date()
         self.assertEqual(birth_date.month, 11)
         self.assertEqual(birth_date.day, 27)
 
     def test_pretty_print(self):
         """Test that pretty print function runs without errors and contains key data."""
-        pin = SwedishPersonalIdentityNumber("198012241231")
+        pin = SwePinLoose("198012241231")
         pretty_output = pin.pretty_print()
 
         self.assertIn("1980", pretty_output)
