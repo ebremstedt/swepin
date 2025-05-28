@@ -2,6 +2,7 @@ import re
 from enum import Enum, auto
 from swepin import calculate_luhn_validation_digit
 from swepin.loose import SwePinLoose
+from swepin.exceptions import SwePinFormatError, SwePinLuhnError
 from datetime import date as Date
 
 
@@ -33,7 +34,7 @@ class SwePinStrict(SwePinLoose):
 
         if not self._validate_format(pin, pin_format):
             expected_format = self._get_format_description(pin_format)
-            raise Exception(
+            raise SwePinFormatError(
                 f'"{pin}" does not match required format {pin_format.name}. '
                 f'Expected: {expected_format}'
             )
@@ -118,7 +119,7 @@ class SwePinStrict(SwePinLoose):
         self.validation_digit = calculated_validation_digit
 
         if calculated_validation_digit != original_validation_digit:
-            raise Exception(
+            raise SwePinLuhnError(
                 f"Validation digit did not match. Expected {calculated_validation_digit}, got {original_validation_digit}."
             )
 
