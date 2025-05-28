@@ -1,7 +1,6 @@
 import random
 import datetime
 from datetime import date
-from typing import Union
 from swepin.loose import SwePinLoose, calculate_luhn_validation_digit
 from swepin.strict import SwePinStrict, PinFormat
 
@@ -15,7 +14,7 @@ def generate_valid_pins(
     to_dict: bool = False,
     to_json: bool = False,
     strict: bool = False,
-) -> list[Union[SwePinLoose, SwePinStrict, dict, str]]:
+) -> list[SwePinLoose | SwePinStrict | dict | str]:
     """
     Generate a list of valid Swedish Personal Identity Numbers as objects.
 
@@ -25,7 +24,6 @@ def generate_valid_pins(
         end_year: Latest birth year to generate
         include_coordination_numbers: Whether to include coordination numbers (day + 60)
         male_ratio: Ratio of male PINs (0.0 to 1.0)
-        with_separator: Whether to include separators in the output (always '-' if True)
         today: Reference date for age calculations (defaults to current date)
         to_dict: Output as dictionaries
         to_json: Output as JSON
@@ -35,7 +33,7 @@ def generate_valid_pins(
         List of valid SwedishPersonalIdentityNumber objects, dicts, or JSON strings.
     """
 
-    pins: list[Union[SwePinLoose, SwePinStrict]] = []
+    pins: list[SwePinLoose | SwePinStrict] = []
     today_date = today if today else date.today()
 
     while len(pins) < count:
