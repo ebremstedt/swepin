@@ -4,6 +4,8 @@ from datetime import date as Date
 import json
 from enum import Enum, auto
 
+from swepin.exceptions import SwePinFormatError, SwePinLuhnError
+
 
 class Language(Enum):
     """Language options for output formatting."""
@@ -265,15 +267,12 @@ class SwePinLoose:
 
         self._parse_pin_parts()
 
-        if not self.validation_digit:
-            raise Exception("Validation digit is missing.")
-
         calculated_validation_digit = calculate_luhn_validation_digit(
             input_digits=f"{self.year}{self.month}{self.day}{self.birth_number}"
         )
         if calculated_validation_digit != int(self.validation_digit):
-            raise Exception(
-                f"Validation digit did not match the personal identity number. Expected {calculated_validation_digit}, got {self.validation_digit}."
+            raise SwePinLuhnError(
+                f"Validation digit did not match. Expected {calculated_validation_digit}, got {self.validation_digit}."
             )
 
         self.is_coordination_number = self._is_coordination_number()
@@ -331,8 +330,9 @@ class SwePinLoose:
             str(self.pin),
         )
         if not match:
-            raise Exception(
-                f'Could not parse "{self.pin}" as Swedish Personal Identity Number.'
+            raise SwePinFormatError(
+                f'The pin in the request does not match one of the required formats. '
+                f'Expected: YYYYMMDD-XXXX or YYMMDD-XXXX or YYYYMMDDXXXX'
             )
 
         century = match.group(1)
