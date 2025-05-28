@@ -115,7 +115,6 @@ pin = SwePinStrict("19801284-1234")  # ✅ Valid coordination number
 pin1 = SwePinStrict("19801224-1234", PinFormat.LONG_WITH_SEPARATOR)    # 13 chars
 pin2 = SwePinStrict("198012241234", PinFormat.LONG_WITHOUT_SEPARATOR)  # 12 chars
 pin3 = SwePinStrict("801224-1234", PinFormat.SHORT_WITH_SEPARATOR)     # 11 chars
-pin4 = SwePinStrict("8012241234", PinFormat.SHORT_WITHOUT_SEPARATOR)   # 10 chars
 
 ### Format Conversion
 
@@ -127,8 +126,7 @@ pin = SwePin("198012241234")
 # Access different format representations
 print(pin.long_str_repr)                # "198012241234" (12 digits, no separator)
 print(pin.long_str_repr_w_separator)    # "19801224-1234" (12 digits with separator)
-print(pin.short_str_repr)               # "801224-1234" (10 digits with separator)
-print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits, no separator)
+print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits with separator)
 ```
 
 ### Generate Random Valid PINs for Testing

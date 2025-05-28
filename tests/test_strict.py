@@ -33,13 +33,6 @@ class TestSwePinStrictValidFormats:
         assert pin.year == "80"
         assert pin.separator == "-"
 
-    def test_valid_format_regular_number_short_without_separator(self):
-        """Test valid regular personal number in short format without separator."""
-        pin = SwePinStrict("8012241231", PinFormat.SHORT_WITHOUT_SEPARATOR)
-        assert pin.pin == "8012241231"
-        assert pin.year == "80"
-        assert pin.separator == None
-
     def test_valid_format_coordination_number(self):
         """Test valid coordination number in all formats."""
         # Long with separator
@@ -56,10 +49,6 @@ class TestSwePinStrictValidFormats:
         pin3 = SwePinStrict("801284-1238", PinFormat.SHORT_WITH_SEPARATOR)
         assert pin3.is_coordination_number
 
-        # Short without separator
-        pin4 = SwePinStrict("8012841238", PinFormat.SHORT_WITHOUT_SEPARATOR)
-        assert pin4.is_coordination_number
-
     def test_valid_format_different_years(self):
         """Test valid format with different years."""
         valid_test_cases: list[tuple[str, PinFormat]] = [
@@ -67,7 +56,6 @@ class TestSwePinStrictValidFormats:
             ("19501015-5678", PinFormat.LONG_WITH_SEPARATOR),
             ("200012011231", PinFormat.LONG_WITHOUT_SEPARATOR),
             ("001201-1231", PinFormat.SHORT_WITH_SEPARATOR),
-            ("0012011231", PinFormat.SHORT_WITHOUT_SEPARATOR),
         ]
 
         future_test_cases: list[tuple[str, PinFormat]] = [
@@ -112,8 +100,8 @@ class TestSwePinStrictValidFormats:
         assert not pin.female
 
         # Test format representations
-        assert pin.long_str_repr_no_separator == "198012241231"
-        assert pin.long_str_repr_w_separator == "19801224-1231"
+        assert pin.long_without_separator == "198012241231"
+        assert pin.long_with_separator == "19801224-1231"
 
 
 class TestSwePinStrictInvalidFormats:
@@ -147,8 +135,6 @@ class TestSwePinStrictInvalidFormats:
             ("1980122412345", PinFormat.LONG_WITHOUT_SEPARATOR),  # Too long
             ("80122-1231", PinFormat.SHORT_WITH_SEPARATOR),  # Too short
             ("8012241-1231", PinFormat.SHORT_WITH_SEPARATOR),  # Too long before separator
-            ("801224123", PinFormat.SHORT_WITHOUT_SEPARATOR),  # Too short
-            ("80122412345", PinFormat.SHORT_WITHOUT_SEPARATOR),  # Too long
         ]
 
         for invalid_pin, pin_format in test_cases:
@@ -163,7 +149,6 @@ class TestSwePinStrictInvalidFormats:
             ("19801224-ABCD", PinFormat.LONG_WITH_SEPARATOR),
             ("ABCD12241231", PinFormat.LONG_WITHOUT_SEPARATOR),
             ("AB1224-1231", PinFormat.SHORT_WITH_SEPARATOR),
-            ("AB12241231", PinFormat.SHORT_WITHOUT_SEPARATOR),
         ]
 
         for invalid_pin, pin_format in test_cases:
@@ -181,7 +166,6 @@ class TestSwePinStrictInvalidFormats:
             ("19801224-1235", PinFormat.LONG_WITH_SEPARATOR),
             ("198012241235", PinFormat.LONG_WITHOUT_SEPARATOR),
             ("801224-1235", PinFormat.SHORT_WITH_SEPARATOR),
-            ("8012241235", PinFormat.SHORT_WITHOUT_SEPARATOR),
         ]
 
         for invalid_pin, pin_format in test_cases:
@@ -245,7 +229,6 @@ class TestSwePinStrictEdgeCases:
             SwePinStrict(f"19801224-123{correct_digit}", PinFormat.LONG_WITH_SEPARATOR),
             SwePinStrict(f"19801224123{correct_digit}", PinFormat.LONG_WITHOUT_SEPARATOR),
             SwePinStrict(f"801224-123{correct_digit}", PinFormat.SHORT_WITH_SEPARATOR),
-            SwePinStrict(f"801224123{correct_digit}", PinFormat.SHORT_WITHOUT_SEPARATOR),
         ]
 
         # All should represent the same person
@@ -263,9 +246,9 @@ class TestSwePinStrictFormatProperties:
         """Test that all format properties are consistent."""
         pin = SwePinStrict("19801224-1231", PinFormat.LONG_WITH_SEPARATOR)
 
-        assert pin.long_str_repr_w_separator == "19801224-1231"
-        assert len(pin.long_str_repr_no_separator) == 12
-        assert len(pin.short_str_repr_w_separator) == 11
+        assert pin.long_with_separator == "19801224-1231"
+        assert len(pin.long_without_separator) == 12
+        assert len(pin.short_with_separator) == 11
 
     def test_separator_property_matches_format(self):
         """Test that separator property matches the format used."""

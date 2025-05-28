@@ -116,11 +116,10 @@ class TestSwedishPersonalIdentityNumber(unittest.TestCase):
         """Test the different string representations."""
         pin = SwePinLoose("198012241231")
 
-        self.assertEqual(pin.long_str_repr_no_separator, "198012241231")
-        self.assertEqual(pin.short_str_repr_no_separator, "8012241231")
-        self.assertEqual(pin.long_str_repr_w_separator, "19801224-1231")
-        self.assertEqual(pin.short_str_repr_w_separator, "801224-1231")
-        self.assertEqual(str(pin), "801224-1231")
+        self.assertEqual(pin.long_without_separator, "198012241231")
+        self.assertEqual(pin.long_with_separator, "19801224-1231")
+        self.assertEqual(pin.short_with_separator, "801224-1231")
+        self.assertEqual(str(pin), "19801224-1231")
 
     def test_birth_date(self):
         """Test birth date extraction."""

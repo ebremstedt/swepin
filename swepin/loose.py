@@ -85,9 +85,8 @@ class SwePinLoose:
     * `male`: Boolean indicating if the person is male
     * `female`: Boolean indicating if the person is female
     * `long_str_repr`: Full 12-digit representation without separator (e.g., "198012241234")
-    * `short_str_repr`: 10-digit representation with separator (e.g., "801224-1234")
     * `long_str_repr_w_separator`: Full 12-digit representation with separator (e.g., "19801224-1234")
-    * `short_str_repr_w_separator`: 10-digit representation without separator (e.g., "8012241234")
+    * `short_str_repr_w_separator`: 10-digit representation with separator (e.g., "8012241234")
     * `pretty`: Formatted tabular representation of all properties
     * `dict`: Dictionary representation of all properties
     * `json`: JSON string representation of all properties
@@ -129,7 +128,6 @@ class SwePinLoose:
     full_no_sep = pin.long_str_repr           # "198012241234"
     short_with_sep = pin.short_str_repr       # "801224-1234"
     full_with_sep = pin.long_str_repr_w_separator    # "19801224-1234"
-    short_no_sep = pin.short_str_repr_w_separator    # "8012241234"
 
     # Get dictionary representation (English - default)
     data_dict = pin.dict
@@ -196,10 +194,9 @@ class SwePinLoose:
             "male": "Male",
             "female": "Female",
             "formats": "Formats",
-            "long_wo_sep": "12 digits",
-            "long_w_sep": "12 digits w/ separator",
-            "short_wo_sep": "10 digits",
-            "short_w_sep": "10 digits w/ separator",
+            "long_without_separator": "12 digits",
+            "long_with_separator": "12 digits w/ separator",
+            "short_with_separator": "10 digits w/ separator",
         },
         Language.SWE: {
             "title": "Svenskt Personnummer",
@@ -229,10 +226,9 @@ class SwePinLoose:
             "male": "Man",
             "female": "Kvinna",
             "formats": "Format",
-            "long_wo_sep": "12 siffror utan skiljetecken",
-            "long_w_sep": "12 siffror med skiljetecken",
-            "short_w_sep": "10 siffror med skiljetecken",
-            "short_wo_sep": "10 siffror skiljetecken",
+            "long_without_separator": "12 siffror utan skiljetecken",
+            "long_with_separator": "12 siffror med skiljetecken",
+            "short_with_separator": "10 siffror med skiljetecken",
         },
     }
 
@@ -258,10 +254,9 @@ class SwePinLoose:
         self.male = None
         self.female = None
         self.full_year = None
-        self.long_str_repr_no_separator = None
-        self.short_str_repr_no_separator = None
-        self.long_str_repr_w_separator = None
-        self.short_str_repr_w_separator = None
+        self.long_without_separator = None
+        self.long_with_separator = None
+        self.short_with_separator = None
         self.dict = None
         self.json = None
 
@@ -288,12 +283,12 @@ class SwePinLoose:
         self.female = not self._is_male()
 
         year_month_day = f"{self.year}{self.month}{self.day}"
-        self.long_str_repr_no_separator = (
+        self.long_without_separator = (
             f"{self.century}{year_month_day}{self.birth_number}{self.validation_digit}"
         )
         self.short_str_repr_no_separator = f"{year_month_day}{self.birth_number}{self.validation_digit}"
-        self.long_str_repr_w_separator = f"{self.century}{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
-        self.short_str_repr_w_separator = (
+        self.long_with_separator = f"{self.century}{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
+        self.short_with_separator = (
             f"{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
         )
         self.dict = self.to_dict()
@@ -371,7 +366,7 @@ class SwePinLoose:
         self.validation_digit = match.group(10)
 
     def __str__(self):
-        return self.short_str_repr_w_separator
+        return self.long_with_separator
 
     def pretty_print(self, language: Language = Language.ENG) -> str:
         """
@@ -588,30 +583,23 @@ class SwePinLoose:
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {'  ' + t['long_wo_sep']:^{prop_width-2}} "
+            + f" {'  ' + t['long_without_separator']:^{prop_width-2}} "
             + "┃"
-            + f" {self.long_str_repr_no_separator:<{val_width-2}} "
-            + "┃"
-        )
-        lines.append(
-            "┃"
-            + f" {'  ' + t['long_w_sep']:^{prop_width-2}} "
-            + "┃"
-            + f" {self.long_str_repr_w_separator:<{val_width-2}} "
+            + f" {self.long_without_separator:<{val_width-2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['short_w_sep']:^{prop_width-2}} "
+            + f" {'  ' + t['long_with_separator']:^{prop_width-2}} "
             + "┃"
-            + f" {self.short_str_repr_no_separator:<{val_width-2}} "
+            + f" {self.long_with_separator:<{val_width-2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['short_wo_sep']:^{prop_width-2}} "
+            + f" {'  ' + t['short_with_separator']:^{prop_width-2}} "
             + "┃"
-            + f" {self.short_str_repr_w_separator:<{val_width-2}} "
+            + f" {self.short_with_separator:<{val_width-2}} "
             + "┃"
         )
 
@@ -646,10 +634,9 @@ class SwePinLoose:
                     "är_samordningsnummer": self.is_coordination_number,
                 },
                 "format": {
-                    "12 siffror": self.long_str_repr_no_separator,
-                    "10 siffror": self.short_str_repr_no_separator,
-                    "12 siffror med skiljetecken": self.long_str_repr_w_separator,
-                    "10 siffror med skiljetecken": self.short_str_repr_w_separator,
+                    "12 siffror": self.long_without_separator,
+                    "12 siffror med skiljetecken": self.long_with_separator,
+                    "10 siffror med skiljetecken": self.short_with_separator,
                 },
             }
         else:
@@ -676,10 +663,9 @@ class SwePinLoose:
                     "is_coordination_number": self.is_coordination_number,
                 },
                 "formats": {
-                    "12 digits": self.long_str_repr_no_separator,
-                    "10 digits": self.short_str_repr_no_separator,
-                    "12 digits w/ separator": self.long_str_repr_w_separator,
-                    "10 digits w/ separator": self.short_str_repr_w_separator,
+                    "12 digits": self.long_without_separator,
+                    "12 digits w/ separator": self.long_with_separator,
+                    "10 digits w/ separator": self.short_with_separator,
                 },
             }
 

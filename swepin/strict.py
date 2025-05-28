@@ -11,7 +11,6 @@ class PinFormat(Enum):
     LONG_WITH_SEPARATOR = auto()     # YYYYMMDD-NNNN (13 chars)
     LONG_WITHOUT_SEPARATOR = auto()  # YYYYMMDDNNNN (12 chars)
     SHORT_WITH_SEPARATOR = auto()    # YYMMDD-NNNN (11 chars)
-    SHORT_WITHOUT_SEPARATOR = auto() # YYMMDDNNNN (10 chars)
 
 
 class SwePinStrict(SwePinLoose):
@@ -22,7 +21,6 @@ class SwePinStrict(SwePinLoose):
     - LONG_WITH_SEPARATOR: 19801224-1234 (13 chars)
     - LONG_WITHOUT_SEPARATOR: 198012241234 (12 chars)
     - SHORT_WITH_SEPARATOR: 801224-1234 (11 chars)
-    - SHORT_WITHOUT_SEPARATOR: 8012241234 (10 chars)
 
     Default format:
     - LONG_WITH_SEPARATOR
@@ -35,7 +33,7 @@ class SwePinStrict(SwePinLoose):
         if not self._validate_format(pin, pin_format):
             expected_format = self._get_format_description(pin_format)
             raise SwePinFormatError(
-                f'"{pin}" does not match required format {pin_format.name}. '
+                f'The pin in the request does not match required format {pin_format.name}. '
                 f'Expected: {expected_format}'
             )
 
@@ -48,7 +46,6 @@ class SwePinStrict(SwePinLoose):
             PinFormat.LONG_WITH_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$", 13),
             PinFormat.LONG_WITHOUT_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", 12),
             PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", 11),
-            PinFormat.SHORT_WITHOUT_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})(\d{3})(\d{1})$", 10),
         }
 
         pattern, expected_length = patterns[pin_format]
@@ -59,8 +56,7 @@ class SwePinStrict(SwePinLoose):
         descriptions = {
             PinFormat.LONG_WITH_SEPARATOR: "YYYYMMDD-NNNN",
             PinFormat.LONG_WITHOUT_SEPARATOR: "YYYYMMDDNNNN",
-            PinFormat.SHORT_WITH_SEPARATOR: "YYMMDD-NNNN",
-            PinFormat.SHORT_WITHOUT_SEPARATOR: "YYMMDDNNNN",
+            PinFormat.SHORT_WITH_SEPARATOR: "YYMMDD-NNNN or YYMMDD+NNNN",
         }
         return descriptions[pin_format]
 
@@ -70,14 +66,10 @@ class SwePinStrict(SwePinLoose):
             PinFormat.LONG_WITH_SEPARATOR: r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$",
             PinFormat.LONG_WITHOUT_SEPARATOR: r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$",
             PinFormat.SHORT_WITH_SEPARATOR: r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$",
-            PinFormat.SHORT_WITHOUT_SEPARATOR: r"^(\d{2})(\d{2})(\d{2})(\d{3})(\d{1})$",
         }
 
         pattern = patterns[self.pin_format]
         match = re.match(pattern, str(self.pin))
-
-        if not match:
-            raise Exception(f'Could not parse "{self.pin}" with format {self.pin_format.name}.')
 
         if self.pin_format in [PinFormat.LONG_WITH_SEPARATOR, PinFormat.LONG_WITHOUT_SEPARATOR]:
             full_year = match.group(1)
