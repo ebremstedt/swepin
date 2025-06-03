@@ -1,15 +1,21 @@
-from swepin.swedish_personal_identity_number import (
-    SwedishPersonalIdentityNumber,
+from swepin.loose import (
+    SwePinLoose,
     Language,
     calculate_luhn_validation_digit,
 )
+from swepin.strict import SwePinStrict, PinFormat
 from swepin.generate import generate_valid_pins
+from swepin.exceptions import SwePinFormatError, SwePinLuhnError
 
-SwePin = SwedishPersonalIdentityNumber
+SwePin = SwePinLoose
 
 __all__ = [
     "SwePin",
-    "SwedishPersonalIdentityNumber",
+    "SwePinStrict",
+    "PinFormat",
+    "SwePinLoose",
+    "SwePinFormatError",
+    "SwePinLuhnError",
     "Language",
     "calculate_luhn_validation_digit",
     "generate_valid_pins",

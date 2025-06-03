@@ -20,6 +20,7 @@
 - 🔄 Format conversion (with/without separators, 10/12 digits)
 - ⚙️ Support for coordination numbers and centenarians
 - 🎲 Generate valid random PIN numbers for testing
+- 🔒 **Strict mode** for enforcing exact format requirements
 
 ## Installation
 
@@ -35,6 +36,9 @@ from swepin import SwedishIdentityPersonalNumber
 
 # Or using the shorter alias
 from swepin import SwePin
+
+# For strict format validation (YYYYMMDD-NNNN only)
+from swepin import SwePinStrict
 
 # Parse a Swedish Personal Identity Number
 pin = SwePin("198012241234")
@@ -71,7 +75,7 @@ Swedish Personal Identity Numbers follow this format: `YYYYMMDD-XXXX` or `YYMMDD
   │   │   │   │     │
   │   │   │   │     └── Separator (- if < 100 years old, + if >= 100)
   │   │   │   │
-  │   │   │   └── Day (01-31, or 61-91 for coordination numbers)
+  │   │   │   └── Day (01-31, or 61-91 for coordination numbers a.k.a samordningsnummer)
   │   │   │
   │   │   └── Month (01-12)
   │   │
@@ -87,7 +91,7 @@ Swedish Personal Identity Numbers follow this format: `YYYYMMDD-XXXX` or `YYMMDD
 SwePin supports all standard formats of Swedish Personal Identity Numbers:
 
 ```python
-# All these are valid and will parse correctly
+# All these are valid and will parse correctly with SwePin
 SwePin("198012241234")    # Full format (12 digits)
 SwePin("8012241234")      # Short format (10 digits)
 SwePin("19801224-1234")   # With separator
@@ -95,6 +99,22 @@ SwePin("801224-1234")     # Short with separator
 SwePin("19801284-1234")   # Coordination number (day 24 + 60 = 84)
 SwePin("121212+1212")     # Person over 100 years old (+ separator)
 ```
+
+## Strict Format Validation
+
+For applications that require exact format compliance, use `SwePinStrict` which enforces specific PIN formats through the `PinFormat` enum:
+
+```python
+from swepin import SwePinStrict, PinFormat
+
+# Default format (LONG_WITH_SEPARATOR)
+pin = SwePinStrict("19801224-1234")  # ✅ Uses default format
+pin = SwePinStrict("19801284-1234")  # ✅ Valid coordination number
+
+# Specify format explicitly
+pin1 = SwePinStrict("19801224-1234", PinFormat.LONG_WITH_SEPARATOR)    # 13 chars
+pin2 = SwePinStrict("198012241234", PinFormat.LONG_WITHOUT_SEPARATOR)  # 12 chars
+pin3 = SwePinStrict("801224-1234", PinFormat.SHORT_WITH_SEPARATOR)     # 11 chars
 
 ### Format Conversion
 
@@ -106,30 +126,12 @@ pin = SwePin("198012241234")
 # Access different format representations
 print(pin.long_str_repr)                # "198012241234" (12 digits, no separator)
 print(pin.long_str_repr_w_separator)    # "19801224-1234" (12 digits with separator)
-print(pin.short_str_repr)               # "801224-1234" (10 digits with separator)
-print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits, no separator)
+print(pin.short_str_repr_w_separator)   # "8012241234" (10 digits with separator)
 ```
 
 ### Generate Random Valid PINs for Testing
 
-```python
-from swepin.generators import generate_valid_pins
-from datetime import date
-
-# Generate 5 random valid PIN objects
-pins = generate_valid_pins(5)
-for pin in pins:
-    print(f"{pin} (Birth Date: {pin.birth_date}, Gender: {'Male' if pin.male else 'Female'})")
-
-# Generate PINs with specific parameters
-male_pins = generate_valid_pins(3, male_ratio=1.0)
-old_pins = generate_valid_pins(3, start_year=1900, end_year=1923, include_centenarians=True)
-coord_pins = generate_valid_pins(3, include_coordination_numbers=True)
-
-# Generate PIN dictionaries or JSON
-pin_dicts = generate_valid_pins(5, to_dict=True)
-pin_jsons = generate_valid_pins(5, to_json=True)
-```
+Read [this!](README_GENERATE.md)
 
 ### Language Support
 
@@ -199,7 +201,7 @@ Output:
 
 ### Validation
 
-The library validates personal numbers using the Luhn algorithm to ensure the check digit is correct:
+The library validates personal numbers using the Luhn algorithm to ensure the check/validation digit is correct:
 
 ```python
 try:
@@ -236,7 +238,6 @@ pin = SwePin("121212+1212")  # Person born in 1912
 print(pin.short_str_repr)    # "121212+1212"
 print(pin.full_year)         # "1912"
 ```
-
 
 ## Contributing
 
