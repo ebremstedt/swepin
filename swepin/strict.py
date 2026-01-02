@@ -45,7 +45,7 @@ class SwePinStrict(SwePinLoose):
         patterns = {
             PinFormat.LONG_WITH_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$", 13),
             PinFormat.LONG_WITHOUT_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", 12),
-            PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", 11),
+            PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", 11),
         }
 
         pattern, expected_length = patterns[pin_format]
@@ -121,3 +121,15 @@ class SwePinStrict(SwePinLoose):
         else:
             self.coordination_number = None
             self.calculated_day_from_coordination_number = None
+
+    def validate_long_with_separator(pin: str) -> bool:
+        """Validate format: YYYYMMDD-XXXX or YYYYMMDD+XXXX (e.g., 19900615-1234, 19200615+1234)"""
+        return re.match(r"^(\d{4})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", pin) is not None
+
+    def validate_long_without_separator(pin: str) -> bool:
+        """Validate format: YYYYMMDDXXXX (e.g., 199006151234)"""
+        return re.match(r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", pin) is not None
+
+    def validate_short_with_separator(pin: str) -> bool:
+        """Validate format: YYMMDD-XXXX or YYMMDD+XXXX (e.g., 900615-1234, 200615+1234)"""
+        return re.match(r"^(\d{2})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", pin) is not None
