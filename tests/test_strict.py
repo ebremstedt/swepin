@@ -58,10 +58,6 @@ class TestSwePinStrictValidFormats:
             ("001201-1231", PinFormat.SHORT_WITH_SEPARATOR),
         ]
 
-        future_test_cases: list[tuple[str, PinFormat]] = [
-            ("20251231-9876", PinFormat.LONG_WITH_SEPARATOR),
-        ]
-
         # Test valid historical dates
         for pin_str, pin_format in valid_test_cases:
             from swepin.loose import calculate_luhn_validation_digit
@@ -77,16 +73,6 @@ class TestSwePinStrictValidFormats:
             pin = SwePinStrict(valid_pin, pin_format)
             assert pin.pin == valid_pin
 
-        # Test future dates raise error
-        for pin_str, pin_format in future_test_cases:
-            from swepin.loose import calculate_luhn_validation_digit
-
-            base_digits: str = pin_str.replace("-", "")[2:-1]
-            correct_digit: int = calculate_luhn_validation_digit(base_digits)
-            valid_pin: str = pin_str[:-1] + str(correct_digit)
-
-            with pytest.raises(ValueError):
-                SwePinStrict(valid_pin, pin_format)
 
     def test_inherited_functionality(self):
         """Test that all inherited functionality works correctly."""

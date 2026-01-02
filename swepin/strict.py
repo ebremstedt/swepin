@@ -45,7 +45,7 @@ class SwePinStrict(SwePinLoose):
         patterns = {
             PinFormat.LONG_WITH_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$", 13),
             PinFormat.LONG_WITHOUT_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", 12),
-            PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", 11),
+            PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", 11),
         }
 
         pattern, expected_length = patterns[pin_format]
