@@ -8,9 +8,10 @@ from datetime import date as Date
 
 class PinFormat(Enum):
     """Supported PIN formats for strict validation."""
-    LONG_WITH_SEPARATOR = auto()     # YYYYMMDD-NNNN (13 chars)
+
+    LONG_WITH_SEPARATOR = auto()  # YYYYMMDD-NNNN (13 chars)
     LONG_WITHOUT_SEPARATOR = auto()  # YYYYMMDDNNNN (12 chars)
-    SHORT_WITH_SEPARATOR = auto()    # YYMMDD-NNNN (11 chars)
+    SHORT_WITH_SEPARATOR = auto()  # YYMMDD-NNNN (11 chars)
 
 
 class SwePinStrict(SwePinLoose):
@@ -26,15 +27,20 @@ class SwePinStrict(SwePinLoose):
     - LONG_WITH_SEPARATOR
     """
 
-    def __init__(self, pin: str,  pin_format: PinFormat = PinFormat.LONG_WITH_SEPARATOR, today: Date | None = None):
+    def __init__(
+        self,
+        pin: str,
+        pin_format: PinFormat = PinFormat.LONG_WITH_SEPARATOR,
+        today: Date | None = None,
+    ):
         if not isinstance(pin, str):
             raise Exception("Swedish personal identity number must be a string")
 
         if not self._validate_format(pin, pin_format):
             expected_format = self._get_format_description(pin_format)
             raise SwePinFormatError(
-                f'The pin in the request does not match required format {pin_format.name}. '
-                f'Expected: {expected_format}'
+                f"The pin in the request does not match required format {pin_format.name}. "
+                f"Expected: {expected_format}"
             )
 
         self.pin_format = pin_format
@@ -43,9 +49,18 @@ class SwePinStrict(SwePinLoose):
     def _validate_format(self, pin: str, pin_format: PinFormat) -> bool:
         """Validate PIN matches the specified format."""
         patterns = {
-            PinFormat.LONG_WITH_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$", 13),
-            PinFormat.LONG_WITHOUT_SEPARATOR: (r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", 12),
-            PinFormat.SHORT_WITH_SEPARATOR: (r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", 11),
+            PinFormat.LONG_WITH_SEPARATOR: (
+                r"^(\d{4})(\d{2})(\d{2})-(\d{3})(\d{1})$",
+                13,
+            ),
+            PinFormat.LONG_WITHOUT_SEPARATOR: (
+                r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$",
+                12,
+            ),
+            PinFormat.SHORT_WITH_SEPARATOR: (
+                r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$",
+                11,
+            ),
         }
 
         pattern, expected_length = patterns[pin_format]
@@ -71,7 +86,10 @@ class SwePinStrict(SwePinLoose):
         pattern = patterns[self.pin_format]
         match = re.match(pattern, str(self.pin))
 
-        if self.pin_format in [PinFormat.LONG_WITH_SEPARATOR, PinFormat.LONG_WITHOUT_SEPARATOR]:
+        if self.pin_format in [
+            PinFormat.LONG_WITH_SEPARATOR,
+            PinFormat.LONG_WITHOUT_SEPARATOR,
+        ]:
             full_year = match.group(1)
             month = match.group(2)
             day = match.group(3)
@@ -131,5 +149,5 @@ class SwePinStrict(SwePinLoose):
         return re.match(r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", pin) is not None
 
     def validate_short_with_separator(pin: str) -> bool:
-        """Validate format: YYMMDD-XXXX or YYMMDD+XXXX (e.g., 900615-1234, 200615+1234)"""
-        return re.match(r"^(\d{2})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", pin) is not None
+        """Validate format: YYMMDD-XXXX or YYMMDD+XXXX (e.g., 900615-1234)"""
+        return re.match(r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", pin) is not None

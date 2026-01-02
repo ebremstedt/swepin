@@ -4,6 +4,7 @@ from datetime import date
 from swepin.loose import SwePinLoose, calculate_luhn_validation_digit
 from swepin.strict import SwePinStrict, PinFormat
 
+
 def generate_valid_pins(
     count: int = 10,
     start_year: int = 1920,
@@ -41,7 +42,9 @@ def generate_valid_pins(
         month = random.randint(1, 12)
 
         if month == 2:  # February
-            max_day = 29 if (year % 400 == 0 or (year % 4 == 0 and year % 100 != 0)) else 28
+            max_day = (
+                29 if (year % 400 == 0 or (year % 4 == 0 and year % 100 != 0)) else 28
+            )
         elif month in [4, 6, 9, 11]:
             max_day = 30
         else:
@@ -59,7 +62,11 @@ def generate_valid_pins(
         is_male = random.random() < male_ratio
 
         birth_place = random.randint(0, 99)
-        gender_digit = random.choice([1, 3, 5, 7, 9]) if is_male else random.choice([0, 2, 4, 6, 8])
+        gender_digit = (
+            random.choice([1, 3, 5, 7, 9])
+            if is_male
+            else random.choice([0, 2, 4, 6, 8])
+        )
 
         year_str = str(year)
         short_year = year_str[-2:]

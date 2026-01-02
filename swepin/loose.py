@@ -285,11 +285,11 @@ class SwePinLoose:
         self.long_without_separator = (
             f"{self.century}{year_month_day}{self.birth_number}{self.validation_digit}"
         )
-        self.short_str_repr_no_separator = f"{year_month_day}{self.birth_number}{self.validation_digit}"
-        self.long_with_separator = f"{self.century}{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
-        self.short_with_separator = (
-            f"{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
+        self.short_str_repr_no_separator = (
+            f"{year_month_day}{self.birth_number}{self.validation_digit}"
         )
+        self.long_with_separator = f"{self.century}{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
+        self.short_with_separator = f"{year_month_day}{self.separator}{self.birth_number}{self.validation_digit}"
         self.dict = self.to_dict()
         self.json = json.dumps(self.dict)
 
@@ -331,8 +331,8 @@ class SwePinLoose:
         )
         if not match:
             raise SwePinFormatError(
-                f'The pin in the request does not match one of the required formats. '
-                f'Expected: YYYYMMDD-XXXX or YYMMDD-XXXX or YYYYMMDDXXXX'
+                f"The pin in the request does not match one of the required formats. "
+                f"Expected: YYYYMMDD-XXXX or YYMMDD-XXXX or YYYYMMDDXXXX"
             )
 
         century = match.group(1)
@@ -401,9 +401,9 @@ class SwePinLoose:
         # Add property and value header
         lines.append(
             "┃"
-            + f" {t['property']:^{prop_width-2}} "
+            + f" {t['property']:^{prop_width - 2}} "
             + "┃"
-            + f" {t['value']:^{val_width-2}} "
+            + f" {t['value']:^{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
@@ -411,9 +411,9 @@ class SwePinLoose:
         # Add the original PIN
         lines.append(
             "┃"
-            + f" {t['original_number']:^{prop_width-2}} "
+            + f" {t['original_number']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.pin:<{val_width-2}} "
+            + f" {self.pin:<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
@@ -421,52 +421,52 @@ class SwePinLoose:
         # Add birth date section
         lines.append(
             "┃"
-            + f" {t['birth_date']:^{prop_width-2}} "
+            + f" {t['birth_date']:^{prop_width - 2}} "
             + "┃"
-            + f" {'':<{val_width-2}} "
+            + f" {'':<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {'  ' + t['century']:^{prop_width-2}} "
+            + f" {'  ' + t['century']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.century:<{val_width-2}} "
-            + "┃"
-        )
-        lines.append(
-            "┃"
-            + f" {'  ' + t['year_2digits']:^{prop_width-2}} "
-            + "┃"
-            + f" {self.year:<{val_width-2}} "
+            + f" {self.century:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['full_year']:^{prop_width-2}} "
+            + f" {'  ' + t['year_2digits']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.full_year:<{val_width-2}} "
-            + "┃"
-        )
-        lines.append(
-            "┃"
-            + f" {'  ' + t['month']:^{prop_width-2}} "
-            + "┃"
-            + f" {self.month:<{val_width-2}} "
+            + f" {self.year:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['day']:^{prop_width-2}} "
+            + f" {'  ' + t['full_year']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.day:<{val_width-2}} "
+            + f" {self.full_year:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['full_date']:^{prop_width-2}} "
+            + f" {'  ' + t['month']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.get_birth_date().strftime('%Y-%m-%d'):<{val_width-2}} "
+            + f" {self.month:<{val_width - 2}} "
+            + "┃"
+        )
+        lines.append(
+            "┃"
+            + f" {'  ' + t['day']:^{prop_width - 2}} "
+            + "┃"
+            + f" {self.day:<{val_width - 2}} "
+            + "┃"
+        )
+        lines.append(
+            "┃"
+            + f" {'  ' + t['full_date']:^{prop_width - 2}} "
+            + "┃"
+            + f" {self.get_birth_date().strftime('%Y-%m-%d'):<{val_width - 2}} "
             + "┃"
         )
 
@@ -474,24 +474,24 @@ class SwePinLoose:
         if self.is_coordination_number:
             lines.append(
                 "┃"
-                + f" {'  ' + t['coordination_number']:^{prop_width-2}} "
+                + f" {'  ' + t['coordination_number']:^{prop_width - 2}} "
                 + "┃"
-                + f" {t['yes_day_60']:<{val_width-2}} "
+                + f" {t['yes_day_60']:<{val_width - 2}} "
                 + "┃"
             )
             lines.append(
                 "┃"
-                + f" {'  ' + t['actual_day']:^{prop_width-2}} "
+                + f" {'  ' + t['actual_day']:^{prop_width - 2}} "
                 + "┃"
-                + f" {self.calculated_day_from_coordination_number:<{val_width-2}} "
+                + f" {self.calculated_day_from_coordination_number:<{val_width - 2}} "
                 + "┃"
             )
         else:
             lines.append(
                 "┃"
-                + f" {'  ' + t['coordination_number']:^{prop_width-2}} "
+                + f" {'  ' + t['coordination_number']:^{prop_width - 2}} "
                 + "┃"
-                + f" {t['no']:<{val_width-2}} "
+                + f" {t['no']:<{val_width - 2}} "
                 + "┃"
             )
 
@@ -500,9 +500,9 @@ class SwePinLoose:
         # Add separator section
         lines.append(
             "┃"
-            + f" {t['separator']:^{prop_width-2}} "
+            + f" {t['separator']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.separator:<{val_width-2}} "
+            + f" {self.separator:<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
@@ -510,38 +510,38 @@ class SwePinLoose:
         # Add birth number section
         lines.append(
             "┃"
-            + f" {t['birth_number']:^{prop_width-2}} "
+            + f" {t['birth_number']:^{prop_width - 2}} "
             + "┃"
-            + f" {'':<{val_width-2}} "
+            + f" {'':<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {'  ' + t['complete_number']:^{prop_width-2}} "
+            + f" {'  ' + t['complete_number']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.birth_number:<{val_width-2}} "
-            + "┃"
-        )
-        lines.append(
-            "┃"
-            + f" {'  ' + t['birth_place_digits']:^{prop_width-2}} "
-            + "┃"
-            + f" {self.birth_place:<{val_width-2}} "
+            + f" {self.birth_number:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['gender_digit']:^{prop_width-2}} "
+            + f" {'  ' + t['birth_place_digits']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.gender_digit:<{val_width-2}} "
+            + f" {self.birth_place:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['validation_digit']:^{prop_width-2}} "
+            + f" {'  ' + t['gender_digit']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.validation_digit:<{val_width-2}} "
+            + f" {self.gender_digit:<{val_width - 2}} "
+            + "┃"
+        )
+        lines.append(
+            "┃"
+            + f" {'  ' + t['validation_digit']:^{prop_width - 2}} "
+            + "┃"
+            + f" {self.validation_digit:<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
@@ -549,25 +549,25 @@ class SwePinLoose:
         # Add derived properties section
         lines.append(
             "┃"
-            + f" {t['derived_properties']:^{prop_width-2}} "
+            + f" {t['derived_properties']:^{prop_width - 2}} "
             + "┃"
-            + f" {'':<{val_width-2}} "
+            + f" {'':<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {'  ' + t['age']:^{prop_width-2}} "
+            + f" {'  ' + t['age']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.age:<{val_width-2}} "
+            + f" {self.age:<{val_width - 2}} "
             + "┃"
         )
         gender_value = t["male"] if self.male else t["female"]
         lines.append(
             "┃"
-            + f" {'  ' + t['gender']:^{prop_width-2}} "
+            + f" {'  ' + t['gender']:^{prop_width - 2}} "
             + "┃"
-            + f" {gender_value:<{val_width-2}} "
+            + f" {gender_value:<{val_width - 2}} "
             + "┃"
         )
 
@@ -575,31 +575,31 @@ class SwePinLoose:
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {t['formats']:^{prop_width-2}} "
+            + f" {t['formats']:^{prop_width - 2}} "
             + "┃"
-            + f" {'':<{val_width-2}} "
+            + f" {'':<{val_width - 2}} "
             + "┃"
         )
         lines.append("┣" + "━" * prop_width + "╋" + "━" * val_width + "┫")
         lines.append(
             "┃"
-            + f" {'  ' + t['long_without_separator']:^{prop_width-2}} "
+            + f" {'  ' + t['long_without_separator']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.long_without_separator:<{val_width-2}} "
-            + "┃"
-        )
-        lines.append(
-            "┃"
-            + f" {'  ' + t['long_with_separator']:^{prop_width-2}} "
-            + "┃"
-            + f" {self.long_with_separator:<{val_width-2}} "
+            + f" {self.long_without_separator:<{val_width - 2}} "
             + "┃"
         )
         lines.append(
             "┃"
-            + f" {'  ' + t['short_with_separator']:^{prop_width-2}} "
+            + f" {'  ' + t['long_with_separator']:^{prop_width - 2}} "
             + "┃"
-            + f" {self.short_with_separator:<{val_width-2}} "
+            + f" {self.long_with_separator:<{val_width - 2}} "
+            + "┃"
+        )
+        lines.append(
+            "┃"
+            + f" {'  ' + t['short_with_separator']:^{prop_width - 2}} "
+            + "┃"
+            + f" {self.short_with_separator:<{val_width - 2}} "
             + "┃"
         )
 
