@@ -3,7 +3,13 @@ from swepin.loose import (
     Language,
     calculate_luhn_validation_digit,
 )
-from swepin.strict import SwePinStrict, PinFormat
+from swepin.strict import (
+    SwePinStrict,
+    PinFormat,
+    validate_long_with_separator,
+    validate_long_without_separator,
+    validate_short_with_separator,
+)
 from swepin.generate import generate_valid_pins
 from swepin.exceptions import SwePinFormatError, SwePinLuhnError
 
@@ -19,4 +25,7 @@ __all__ = [
     "Language",
     "calculate_luhn_validation_digit",
     "generate_valid_pins",
+    "validate_long_with_separator",
+    "validate_long_without_separator",
+    "validate_short_with_separator",
 ]

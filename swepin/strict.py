@@ -140,14 +140,17 @@ class SwePinStrict(SwePinLoose):
             self.coordination_number = None
             self.calculated_day_from_coordination_number = None
 
-    def validate_long_with_separator(pin: str) -> bool:
-        """Validate format: YYYYMMDD-XXXX or YYYYMMDD+XXXX (e.g., 19900615-1234, 19200615+1234)"""
-        return re.match(r"^(\d{4})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", pin) is not None
 
-    def validate_long_without_separator(pin: str) -> bool:
-        """Validate format: YYYYMMDDXXXX (e.g., 199006151234)"""
-        return re.match(r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", pin) is not None
+def validate_long_with_separator(pin: str) -> bool:
+    """Validate format: YYYYMMDD-XXXX or YYYYMMDD+XXXX (e.g., 19900615-1234, 19200615+1234)"""
+    return re.match(r"^(\d{4})(\d{2})(\d{2})[-+](\d{3})(\d{1})$", pin) is not None
 
-    def validate_short_with_separator(pin: str) -> bool:
-        """Validate format: YYMMDD-XXXX or YYMMDD+XXXX (e.g., 900615-1234)"""
-        return re.match(r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", pin) is not None
+
+def validate_long_without_separator(pin: str) -> bool:
+    """Validate format: YYYYMMDDXXXX (e.g., 199006151234)"""
+    return re.match(r"^(\d{4})(\d{2})(\d{2})(\d{3})(\d{1})$", pin) is not None
+
+
+def validate_short_with_separator(pin: str) -> bool:
+    """Validate format: YYMMDD-XXXX or YYMMDD+XXXX (e.g., 900615-1234)"""
+    return re.match(r"^(\d{2})(\d{2})(\d{2})-(\d{3})(\d{1})$", pin) is not None
